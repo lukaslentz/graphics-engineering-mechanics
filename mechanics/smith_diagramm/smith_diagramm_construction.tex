@@ -1,0 +1,114 @@
+%Start
+%
+%
+%******************************************************************************************************%
+%                                 Smith diagramm construction                                          %
+%******************************************************************************************************%
+% Illustrate the construction of smith diagramm                             													 %
+%******************************************************************************************************%
+% Version 1,                                                                                           %
+% 07.07.2023                                                                                           %
+% L.Lentz@umwelt-campus.de                                                                             %
+%******************************************************************************************************%
+%
+%
+\documentclass[tikz,border=10pt]{standalone}
+\usetikzlibrary{calc,intersections}
+%
+\begin{document}
+%
+\tikzset{
+helper/.style = {color=gray,line width=\tlw},
+points/.style = {circle,draw,fill=white,, minimum size=0.6cm,
+              inner sep=0pt, outer sep=0pt},
+}
+%
+\begin{tikzpicture}
+%
+%	Define stress values
+%'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+\def\scal{1/100}; %scal factor for stress in diagramm
+\def\sigw{300*\scal};
+\def\sigs{400*\scal};
+\def\sigsx{0.5*\sigs};
+\def\re{500*\scal};
+%'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+%
+\def\os{0.1};% small offset
+\def\los{1};% large offset
+\def\tlw{1pt};%	thinn-lines width
+\def\mlw{1.5pt};% medium-lines width
+\def\lw{2pt};% thick-lines width
+%
+\clip[](-\los,-\sigw-\los) rectangle (\re+2*\los,\re+2*\los);% clip canvas because of large construction lines
+%
+\coordinate (O) at (0,0);% Origin
+\coordinate (Y) at (0,\re+\los);% end of y-axis
+\coordinate (X) at (\re+\los,0);% end of x-axis
+%
+\coordinate (A) at (0,\sigw);
+\coordinate (B) at (\sigsx,\sigs);
+\coordinate (C) at (\re,\re);
+\coordinate (D) at (\sigsx,0);
+\coordinate (E) at (0,-\sigw);
+%
+%coordinate system
+\draw[-latex,line width = \mlw](O)--(X) node[at end, right]{$\sigma_m$};
+\draw[-latex,line width = \mlw]($(O)+(0,-\sigw-\los)$)--(Y) node[at end, above]{$\sigma$};
+%
+%kappa-lines
+\draw[draw=none,name path=horizon](Y)--+(\re+2*\los,0);
+\draw[draw=none,name path=kappa0](O)--($(O)!50!(B)$);
+\draw[draw=none,name path=kappa1](O)--($(O)!50!(C)$);
+\path[name intersections={of=horizon and kappa0,by=K0}];
+\path[name intersections={of=horizon and kappa1,by=K1}];
+\draw[color = gray](O)--(K0)node[at end, anchor = south]{$\kappa=0$};
+\draw[color = gray](O)--(K1)node[at end, anchor = south]{$\kappa=1$};
+%
+%sigma-lines
+\draw[line width=\tlw](A)--+(-\os,0)node[at end, left]{$\sigma_w$};
+\draw[dashed,line width=\tlw]($(B-|O)+(-\os,0)$)--(B)node[at start,left]{$\sigma_{Sch}$};
+\draw[dashed,line width=\tlw,name path=line1]($(C-|O)+(-\os,0)$)--(C)node[at start, left]{$R_e$};
+\draw[dashed,line width=\tlw]($(C|-O)+(0,-\os)$)--(C)node[at start, below]{$R_e$};
+\draw[line width=\tlw](O)--+(-\os,0)node[at end, left]{$0$};
+\draw[line width=\tlw](E)--+(-\os,0)node[at end, left]{$-\sigma_w$};
+%
+%intersections
+\draw[draw=none,name path=line2](A)--($(A)!50!(B)$);
+\path[name intersections={of=line1 and line2,by=H1}];
+\draw[helper]($(H1)!-0.5cm!(A)$)--(A);
+\draw[helper]($(H1)!-0.5cm!(C)$)--(C);
+\draw[draw=none,name path=line3](H1)--+(0,-\re);
+\draw[draw=none,name path=line4](E)--($(E)!50!(D)$);
+\path[name intersections={of=line3 and line4, by=H2}];
+%
+%visualize helper-lines
+\draw[helper]($(H1)!-0.5cm!(H2)$)--($(H2)!-0.5cm!(H1)$);
+\draw[helper]($(H2)!-0.5cm!(E)$)--(E);
+\draw[helper](D)--($(D)!1.2!(H2)$);
+\draw[helper]($(H1)+(0:0.3)$)arc(0:-90:0.3);
+\node[color=gray]at($(H1)+(-45:0.175)$){$\cdot$};
+%
+%sigma values
+\draw[color = red, line width = \lw](A)--(E);
+\draw[color = orange, line width = \lw](B)--(D);
+%
+%main line
+\draw[color = blue,line width = \lw](A)--(H1)--(C)--(H2)--(E);
+%
+%name construction points
+\node[points,anchor=south east,yshift=6pt,xshift=-4pt] at(A){$A$};
+\node[points,anchor=south east,yshift=4pt] at(B){$B$};
+\node[points,anchor=south east,yshift=4pt,xshift=-4pt] at(H1){$S_1$};
+\node[points,anchor=south east,yshift=4pt,xshift=2pt] at(C){$C$};
+\node[points,anchor=north west,yshift=-0pt,xshift=4pt] at(H2){$S_2$};
+\node[points,anchor=north west,yshift=-4pt] at(D){$D$};
+\node[points,anchor=north west,xshift=4pt] at(E){$E$};
+%
+\end{tikzpicture}
+%
+\end{document}
+%
+%
+%
+%End
