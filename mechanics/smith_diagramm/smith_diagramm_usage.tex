@@ -16,8 +16,6 @@
 \usepackage{amsmath}
 \usetikzlibrary{calc,intersections,backgrounds}
 %
-\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
-%
 \begin{document}
 %
 \tikzset{
@@ -101,7 +99,7 @@ caseIII/.style = {color=black!40!green,line width=1.5pt},
 \path[name intersections={of=line5 and line7, by=H5}];
 %
 %
-\draw[dashed,line width=\tlw]($(S-|O)+(-\os,0)$)--(S)node[at start,left]{$\sigma_o$};
+\draw[dashed,line width=\tlw]($(S-|O)+(-\os,0)$)--(S)node[at start,left]{$\sigma_{\text{ist}}$};
 \draw[dashed,line width=\tlw]($(S|-O)+(0,-\os)$)--(S)node[at start,below]{$\sigma_m$};
 %
 \draw[caseI](H3)--(S);
