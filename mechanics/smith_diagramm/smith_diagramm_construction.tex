@@ -13,7 +13,7 @@
 %
 %
 \documentclass[tikz,border=10pt]{standalone}
-\usetikzlibrary{calc,intersections}
+\usetikzlibrary{calc,intersections,backgrounds}
 %
 \begin{document}
 %
@@ -29,16 +29,16 @@ points/.style = {circle,draw,fill=white,, minimum size=0.6cm,
 %'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 \def\scal{1/100}; %scal factor for stress in diagramm
 \def\sigw{300*\scal};
-\def\sigs{400*\scal};
+\def\sigs{450*\scal};
 \def\sigsx{0.5*\sigs};
-\def\re{500*\scal};
+\def\re{520*\scal};
 %'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 %
 \def\os{0.1};% small offset
 \def\los{1};% large offset
-\def\tlw{1pt};%	thinn-lines width
-\def\mlw{1.5pt};% medium-lines width
-\def\lw{2pt};% thick-lines width
+\def\tlw{0.7pt};%	thinn-lines width
+\def\mlw{1.pt};% medium-lines width
+\def\lw{1.7pt};% thick-lines width
 %
 \clip[](-\los,-\sigw-\los) rectangle (\re+2*\los,\re+2*\los);% clip canvas because of large construction lines
 %
@@ -62,8 +62,8 @@ points/.style = {circle,draw,fill=white,, minimum size=0.6cm,
 \draw[draw=none,name path=kappa1](O)--($(O)!50!(C)$);
 \path[name intersections={of=horizon and kappa0,by=K0}];
 \path[name intersections={of=horizon and kappa1,by=K1}];
-\draw[color = gray](O)--(K0)node[at end, anchor = south]{$\kappa=0$};
-\draw[color = gray](O)--(K1)node[at end, anchor = south]{$\kappa=1$};
+\draw[](O)--(K0)node[at end, anchor = south]{$\kappa=0$};
+\draw[](O)--(K1)node[at end, anchor = south]{$\kappa=1$};
 %
 %sigma-lines
 \draw[line width=\tlw](A)--+(-\os,0)node[at end, left]{$\sigma_w$};
@@ -82,9 +82,18 @@ points/.style = {circle,draw,fill=white,, minimum size=0.6cm,
 \draw[draw=none,name path=line4](E)--($(E)!50!(D)$);
 \path[name intersections={of=line3 and line4, by=H2}];
 %
+\begin{scope}[on background layer]
+\draw[draw=none,name path=gline]($(H2)+(0.75*\los,0)$)--($($(H2)+(0.75*\los,0)$)!50!(0.75*\los,-\sigw)$);
+\draw[draw=none,name path=yaxis](Y)--+(0,-5*\re);
+\path[name intersections={of=gline and yaxis, by=G}];
+\clip[](0,\re+0.5*\los)--(\re+0.75*\los,\re+0.5*\los)--($(H2)+(0.75*\los,0)$)--(G)--cycle;
+\draw[step=.5,gray,thin] (0,-\sigw-\los) grid (\re+\los,\re+\los);
+\end{scope}
+%
 %visualize helper-lines
 \draw[helper]($(H1)!-0.5cm!(H2)$)--($(H2)!-0.5cm!(H1)$);
 \draw[helper]($(H2)!-0.5cm!(E)$)--(E);
+\draw[helper]($(H2)!-0.5cm!(C)$)--(C);
 \draw[helper](D)--($(D)!1.2!(H2)$);
 \draw[helper]($(H1)+(0:0.3)$)arc(0:-90:0.3);
 \node[color=gray]at($(H1)+(-45:0.175)$){$\cdot$};
