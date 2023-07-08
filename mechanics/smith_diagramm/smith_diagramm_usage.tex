@@ -13,56 +13,69 @@
 %
 %
 \documentclass[tikz,border=10pt]{standalone}
-\usetikzlibrary{calc,intersections}
+\usepackage{amsmath}
+\usetikzlibrary{calc,intersections,backgrounds}
+%
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
 %
 \begin{document}
 %
 \tikzset{
-points/.style = {circle,draw,fill=white,, minimum size=0.6cm,
-              inner sep=0pt, outer sep=0pt},
+points/.style = {circle,draw,fill=white,minimum size=0.6cm,inner sep=0pt, outer sep=0pt},
+caseI/.style = {color=orange!90,line width=1.5pt},
+caseII/.style = {color=purple!90,line width=1.5pt},
+caseIII/.style = {color=black!40!green,line width=1.5pt},
 }
 %
 \begin{tikzpicture}
 %
-\def\delta{1};
-\def\os{0.1};
-\def\hw{1pt};
-\def\lw{1.5pt};
-\def\sw{2pt};
-%
-\def\scal{1/100};
+%	Define stress values
+%'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+\def\scal{1/100}; %scal factor for stress in diagramm
 \def\sigw{300*\scal};
-\def\sigs{400*\scal};
+\def\sigs{450*\scal};
 \def\sigsx{0.5*\sigs};
-\def\re{500*\scal};
+\def\re{520*\scal};
+\def\sm{140*\scal};
+\def\sa{100*\scal};
+%'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 %
-\def\sigm{270*\scal};
-\def\siga{90*\scal};
+\def\os{0.1};% small offset
+\def\los{1};% large offset
+\def\tlw{0.7pt};%	thinn-lines width
+\def\mlw{1.pt};% medium-lines width
+\def\lw{1.7pt};% thick-lines width
 %
-\clip[](-2*\delta,-\sigw-\delta) rectangle (\re+2*\delta,\re+2*\delta);
+\clip[](-\los,-\sigw-\los) rectangle (\re+2*\los,\re+2*\los);% clip canvas because of large construction lines
 %
-\coordinate (O) at (0,0);
-\coordinate (Y) at (0,\re+\delta);
-\coordinate (X) at (\re+\delta,0);
+\coordinate (O) at (0,0);% Origin
+\coordinate (Y) at (0,\re+\los);% end of y-axis
+\coordinate (X) at (\re+\los,0);% end of x-axis
 %
 \coordinate (A) at (0,\sigw);
 \coordinate (B) at (\sigsx,\sigs);
 \coordinate (C) at (\re,\re);
 \coordinate (D) at (\sigsx,0);
 \coordinate (E) at (0,-\sigw);
-\coordinate (S) at (\sigm,\sigm+\siga);
-\coordinate (H3) at (\sigm,\sigm);
-\coordinate (H4) at (\sigm,\sigm-\siga);
 %
-\draw[-latex,line width = \lw](O)--(X) node[at end, right]{$\sigma_m$};
-\draw[-latex,line width = \lw]($(O)+(0,-\sigw-\delta)$)--(Y) node[at end, above]{$\sigma$};
+\coordinate (S) at (\sm,\sm+\sa);
 %
-\draw[color=gray,name path=linesm](O)--($(C)!-1.cm!(O)$)node[at end, anchor = south]{$\kappa=1$};
-\draw[color=gray](O)--($(B)!-2.cm!(O)$)node[at end, anchor = south]{$\kappa=0$};
-\draw[color=gray](O)--($(S)!-2.cm!(O)$)node[at end, anchor = south]{$\kappa^*$};
+%coordinate system
+\draw[-latex,line width = \mlw](O)--(X) node[at end, right]{$\sigma_m$};
+\draw[-latex,line width = \mlw]($(O)+(0,-\sigw-\los)$)--(Y) node[at end, above]{$\sigma$};
+%
+%kappa-lines
+\draw[draw=none,name path=horizon](Y)--+(\re+2*\los,0);
+\draw[draw=none,name path=kappa1](O)--($(O)!50!(C)$);
+\draw[draw=none,name path=kappa](O)--($(O)!50!(S)$);
+\path[name intersections={of=horizon and kappa1,by=K1}];
+\path[name intersections={of=horizon and kappa,by=K}];
+\draw[](O)--(K1)node[at end, anchor = south]{$\kappa=1$};
+\draw[](O)--(K)node[at end, anchor = south]{$\kappa_{\text{ist}}$};
+%
 %
 \draw[draw=none,name path=line1]($(C-|O)+(-\os,0)$)--(C);
-\draw[line width=\hw](O)--+(-\os,0)node[at end, left]{$0$};
+\draw[line width=\tlw](O)--+(-\os,0)node[at end, left]{$0$};
 %
 \draw[draw=none,name path=line2](A)--($(A)!+50!(B)$);
 \path[name intersections={of=line1 and line2,by=H1}];
@@ -71,14 +84,43 @@ points/.style = {circle,draw,fill=white,, minimum size=0.6cm,
 \draw[draw=none,name path=line4](E)--($(E)!50!(D)$);
 \path[name intersections={of=line3 and line4, by=H2}];
 %
-\draw[color = blue,line width = \sw](A)--(H1)--(C)--(H2)--(E);
+\begin{scope}[on background layer]
+\draw[draw=none,name path=gline]($(H2)+(0.75*\los,0)$)--($($(H2)+(0.75*\los,0)$)!50!(0.75*\los,-\sigw)$);
+\draw[draw=none,name path=yaxis](Y)--+(0,-5*\re);
+\path[name intersections={of=gline and yaxis, by=G}];
+\clip[](0,\re+0.5*\los)--(\re+0.75*\los,\re+0.5*\los)--($(H2)+(0.75*\los,0)$)--(G)--cycle;
+\draw[step=.5,gray,thin] (0,-\sigw-\los) grid (\re+\los,\re+\los);
+\end{scope}
 %
-%\coordinate (H3) at (intersection of $(S|-O)$--S and O--C);
+\draw[draw=none,name path=line5](A)--(H1)--(C);
+\draw[draw=none,name path=line6](S)--+(0,\re);
+\draw[draw=none,name path=line7](S)--($(S)!50!(2*\sm,2*\sm+\sa)$);
 %
-\draw[dashed,line width=\hw](S)--($(S-|O)+(-\os,0)$)node[at end,left]{$\sigma_m+\sigma_a$};
-\draw[dashed,line width=\hw](S)--($(S|-O)+(0,-\os)$)node[at end,below]{$\sigma_m$};
-\draw[color=purple!90,line width=\sw](H3)--(S);
-\draw[fill=red,draw=none] (S) circle (2pt);
+\path[name intersections={of=line5 and line6, by=H3}];
+\path[name intersections={of=line5 and kappa, by=H4}];
+\path[name intersections={of=line5 and line7, by=H5}];
+%
+%
+\draw[dashed,line width=\tlw]($(S-|O)+(-\os,0)$)--(S)node[at start,left]{$\sigma_o$};
+\draw[dashed,line width=\tlw]($(S|-O)+(0,-\os)$)--(S)node[at start,below]{$\sigma_m$};
+%
+\draw[caseI](H3)--(S);
+\draw[caseII](H4)--(S);
+\draw[caseIII](H5)--(S);
+%
+\draw(H3-|O)--+(-\os,0)node[at end,left,caseI]{$\sigma_{1}$};
+\draw(H4-|O)--+(-\os,0)node[at end,left,caseII]{$\sigma_{2}$};
+\draw(H5-|O)--+(-\os,0)node[at end,left,caseIII]{$\sigma_{3}$};
+%
+\draw[fill=black,draw=none] (S) circle (2pt);
+%
+\draw[color = blue,line width = \lw](A)--(H1)--(C)--(H2)--(E);
+%
+\begin{scope}[yshift=-2cm,xshift=2cm]
+\draw[caseI](0,0)--+(1,0)node[at end,right]{$\text{Fall 1:}~\sigma_m=\text{konstant}$};
+\draw[caseII](0,-0.4)--+(1,0)node[at end,right]{$\text{Fall 2:}~\kappa=\text{konstant}$};
+\draw[caseIII](0,-0.8)--+(1,0)node[at end,right]{$\text{Fall 3:}~\sigma_a=\text{konstant}$};
+\end{scope}
 %
 \end{tikzpicture}
 %
