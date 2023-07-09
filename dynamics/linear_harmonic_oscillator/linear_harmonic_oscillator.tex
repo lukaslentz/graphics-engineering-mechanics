@@ -73,9 +73,10 @@ plots/.style = {samples=300,smooth,line width = 0.7pt}
 		%
 		\begin{scope}
 			\clip[](0,0) rectangle (\xmax,\ymax);% clip plot to frame
-			\ifthenelse{\i=1}{
+			\ifthenelse{\i=1}
+   				{
    				\draw[domain=0.01:0.707,variable=\x,plots,color=gray,dotted] plot ({sqrt(1-2*\x^2)},{1/2*sqrt(1/(\x^2-\x^4))});
-       			}
+       				};
 			\ifthenelse{\lengthtest{\D pt = 0pt}}
 				{
 				\draw[domain=0:0.99,variable=\x,plots,color=\c] plot (\x,{sqrt(1/((2*\D*\x)^2+(1-\x^2)^2))});
@@ -83,7 +84,7 @@ plots/.style = {samples=300,smooth,line width = 0.7pt}
 				}
 				{
 				\draw[domain=0:\xmax,variable=\x,plots,color=\c] plot (\x,{sqrt(1/((2*\D*\x)^2+(1-\x^2)^2))});% plot amplitude magnification
-				}
+				};
 		\end{scope}
 		%
 		\ifthenelse{\lengthtest{\D pt = 0pt}}
@@ -92,7 +93,7 @@ plots/.style = {samples=300,smooth,line width = 0.7pt}
 			}
 			{
 			\draw[yshift=-\pos,domain=0:\xmax,variable=\x,plots,color=\c] plot (\x,{3.14/180*atan2(-2*\D*\x,1-\x^2)});% plot phase
-			}
+			};
 	%
 	}
 	% axis labels
