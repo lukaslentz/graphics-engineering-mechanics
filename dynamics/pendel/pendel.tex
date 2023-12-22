@@ -1,0 +1,44 @@
+%Start
+%
+%
+%******************************************************************************************************%
+%                                        Penduulum                                                     %
+%******************************************************************************************************%								 
+% Version 1,                                                                                           %
+% 07.07.2023                                                                                           %
+% L.Lentz@umwelt-campus.de                                                                             %
+%******************************************************************************************************%
+%
+%
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{amsmath}
+\usetikzlibrary{calc,intersections,backgrounds}
+%
+\begin{document}
+%
+\tikzset{
+points/.style = {circle,draw,fill=white,minimum size=0.6cm,inner sep=0pt, outer sep=0pt},
+caseI/.style = {color=orange!90,line width=1.5pt},
+caseII/.style = {color=purple!90,line width=1.5pt},
+caseIII/.style = {color=black!40!green,line width=1.5pt},
+}
+%
+\begin{tikzpicture}
+%
+\def\l{3};% length penduulum
+\def\ang{-60};% angle of rotation 
+\def\r{0.2};% radius mass
+%
+%
+\coordinate (O) at (0,0);% Origin
+\coordinate (M) at ({cos(\ang)*\l},{sin(\ang)*\l});% end of y-axis
+%
+\draw[](O)--(M);
+\draw[fill = gray, draw = gray] (M) circle (\r) node[anchor = ]{$M$};
+%
+\end{tikzpicture}
+%
+\end{document}
+%
+%
+%Ende

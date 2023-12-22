@@ -28,36 +28,33 @@ plots/.style = {samples=100,smooth,line width = 0.7pt}
 %
 \begin{document}
 %
-%
-\pgfplotstableset{create on use/amp/.style={create col/set list={0.01,0.02,...,10}}}
-\pgfplotstableset{create on use/eta1/.style={create col/expr={
-sqrt(
-\a
-+3*pow(\thisrow{amp},2)*\b/4
--pow(\d,2)/2
--sqrt(
-4*pow(\thisrow{amp},2)*pow(\f,2)-3*pow(\thisrow{amp},6)*\b*pow(\d,2)+pow(\thisrow{amp},4)*(-4*\a*pow(\d,2)+pow(\d,4)))/(2*pow(\thisrow{amp},2))
-)
-}}}
-%
-\pgfplotstableset{create on use/eta2/.style={create col/expr={
-sqrt(
-\a
-+3*pow(\thisrow{amp},2)*\b/4
--pow(\d,2)/2
-+sqrt(
-4*pow(\thisrow{amp},2)*pow(\f,2)-3*pow(\thisrow{amp},6)*\b*pow(\d,2)+pow(\thisrow{amp},4)*(-4*\a*pow(\d,2)+pow(\d,4)))/(2*pow(\thisrow{amp},2))
-)
-}}}
-%
-\pgfplotstablenew[columns={amp,eta1,eta2}]{1000}\loadedtable
+%%
+%\pgfplotstableset{create on use/amp/.style={create col/set list={0.01,0.02,...,10}}}
+%\pgfplotstableset{create on use/eta1/.style={create col/expr={
+%sqrt(
+%\a
+%+3*pow(\thisrow{amp},2)*\b/4
+%-pow(\d,2)/2
+%-sqrt(
+%4*pow(\thisrow{amp},2)*pow(\f,2)-3*pow(\thisrow{amp},6)*\b*pow(\d,2)+pow(\thisrow{amp},4)*(-4*\a*pow(\d,2)+pow(\d,4)))/(2*pow(\thisrow{amp},2))
+%)
+%}}}
+%%
+%\pgfplotstableset{create on use/eta2/.style={create col/expr={
+%sqrt(
+%\a
+%+3*pow(\thisrow{amp},2)*\b/4
+%-pow(\d,2)/2
+%+sqrt(
+%4*pow(\thisrow{amp},2)*pow(\f,2)-3*pow(\thisrow{amp},6)*\b*pow(\d,2)+pow(\thisrow{amp},4)*(-4*\a*pow(\d,2)+pow(\d,4)))/(2*pow(\thisrow{amp},2))
+%)
+%}}}
+%%
+%\pgfplotstablenew[columns={amp,eta1,eta2}]{1000}\loadedtable
 %\pgfplotstabletypeset[empty cells with={---}]\loadedtable
 %
 \begin{tikzpicture}
-\begin{axis}
-\addplot[color = blue,only marks] table [x=eta1,y=amp] {\loadedtable};
-\addplot[color = blue,only marks] table [x=eta2,y=amp] {\loadedtable};
-\end{axis}
+\draw[domain=0:3,variable=\x,plots,color=red] plot (\x,{sqrt(2-\x)});
 \end{tikzpicture}
 %
 \end{document}
